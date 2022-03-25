@@ -4,7 +4,27 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Test d'exploration GH actions
+      - name: Setup luet
         run: |
-          echo  "${{ secrets.USERNAME }}"
-      - run: echo "C'est fini!"
+          apt-get update
+          apt-get install -y curl
+          curl https://get.mocaccino.org/luet/get_luet_root.sh | sh
+          luet install -y repository/mocaccino-extra-stable
+      - name: Installing Skopeo
+        run: |
+          luet install -y utils/jq container/docker container/skopeo-static
+      - name: Login quay
+        run: |
+          echo ${{ secrets.QUAY_PASSWORD }}| docker login quay.io -u ${{ secrets.QUAY_USER }}  --password-stdin
+      - name: Cloning quay repo
+        run: |
+          src="quay.io/mocaccino/extra"
+          dst="quay.io/capesos/extra"
+          skopeo login quay.io
+          tags=$(skopeo list-tags docker://$src | jq '.Tags')
+          for i in $(echo "$tags" | jq -rc '.[]'); do
+            if ! luet util image-exist $dst:$i; then
+              echo "Copy docker://$src:$i docker://$dst:$i"
+              skopeo --insecure-policy copy docker://$src:$i docker://$dst:$i
+            fi
+          done
