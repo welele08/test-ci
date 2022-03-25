@@ -6,5 +6,5 @@ jobs:
     steps:
       - name: Test d'exploration GH actions
         run: |
-          echo  "${{ secrets.USERNAME }}""
+          echo  "${{ secrets.USERNAME }}"
       - run: echo "C'est fini!"
