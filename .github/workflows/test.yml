@@ -1,8 +1,14 @@
 name: GitHub Actions Demo
-on: [push]
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 */3 * *'
 jobs:
-  Explore-GitHub-Actions:
+  copy-quay:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        Repo: [ desktop, os-commons, extra, kernel-stable]
     steps:
       - name: Setup luet
         run: |
@@ -15,9 +21,12 @@ jobs:
         run: |
           echo ${{ secrets.QUAY_PASSWORD }}| docker login quay.io -u ${{ secrets.QUAY_USER }}  --password-stdin
       - name: Cloning quay repo
+        env:
+          REPO: ${{matrix.Repo}}
+          src: "quay.io/mocaccino/$REPO"
+          dst: "quay.io/capesos/$REPO"
         run: |
-          src="quay.io/mocaccino/extra"
-          dst="quay.io/capesos/extra-test"
+          echo "cloning $src => $dst"
           skopeo login quay.io
           tags=$(skopeo list-tags docker://$src | jq '.Tags')
           echo "Tag list : $tags"
