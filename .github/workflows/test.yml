@@ -6,13 +6,11 @@ jobs:
     steps:
       - name: Setup luet
         run: |
-          apt-get update
-          apt-get install -y curl
-          curl https://get.mocaccino.org/luet/get_luet_root.sh | sh
-          luet install -y repository/mocaccino-extra-stable
+          curl https://get.mocaccino.org/luet/get_luet_root.sh | sudo sh
+          sudo luet install -y repository/mocaccino-extra-stable
       - name: Installing Skopeo
         run: |
-          luet install -y utils/jq container/docker container/skopeo-static
+          sudo luet install -y utils/jq container/docker container/skopeo-static
       - name: Login quay
         run: |
           echo ${{ secrets.QUAY_PASSWORD }}| docker login quay.io -u ${{ secrets.QUAY_USER }}  --password-stdin
