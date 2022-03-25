@@ -17,7 +17,7 @@ jobs:
       - name: Cloning quay repo
         run: |
           src="quay.io/mocaccino/extra"
-          dst="quay.io/capesos/extra"
+          dst="quay.io/capesos/extra-test"
           skopeo login quay.io
           tags=$(skopeo list-tags docker://$src | jq '.Tags')
           for i in $(echo "$tags" | jq -rc '.[]'); do
