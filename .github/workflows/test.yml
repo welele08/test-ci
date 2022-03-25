@@ -2,7 +2,7 @@ name: GitHub Actions Demo
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 0 */3 * *'
+    - cron:  '0 0/6 * * *'
 jobs:
   copy-quay:
     runs-on: ubuntu-latest
