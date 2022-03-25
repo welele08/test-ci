@@ -20,7 +20,9 @@ jobs:
           dst="quay.io/capesos/extra-test"
           skopeo login quay.io
           tags=$(skopeo list-tags docker://$src | jq '.Tags')
+          echo "Tag list : $tags"
           for i in $(echo "$tags" | jq -rc '.[]'); do
+            echo "checking $i"
             if ! luet util image-exist $dst:$i; then
               echo "Copy docker://$src:$i docker://$dst:$i"
               skopeo --insecure-policy copy docker://$src:$i docker://$dst:$i
