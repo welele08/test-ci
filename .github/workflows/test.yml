@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Copy Quay
 on:
   workflow_dispatch:
   schedule:
