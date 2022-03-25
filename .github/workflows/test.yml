@@ -23,17 +23,17 @@ jobs:
       - name: Cloning quay repo
         env:
           REPO: ${{matrix.Repo}}
-          src: "quay.io/mocaccino/$REPO"
-          dst: "quay.io/capesos/$REPO"
+          src: "quay.io/mocaccino"
+          dst: "quay.io/capesos"
         run: |
-          echo "cloning $src => $dst"
+          echo "cloning ${src}/${REPO} => ${dst}/${REPO}"
           skopeo login quay.io
-          tags=$(skopeo list-tags docker://$src | jq '.Tags')
+          tags=$(skopeo list-tags docker://$src/${REPO} | jq '.Tags')
           echo "Tag list : $tags"
           for i in $(echo "$tags" | jq -rc '.[]'); do
             echo "checking $i"
-            if ! luet util image-exist $dst:$i; then
-              echo "Copy docker://$src:$i docker://$dst:$i"
-              skopeo --insecure-policy copy docker://$src:$i docker://$dst:$i
+            if ! luet util image-exist $dst/${REPO}:$i; then
+              echo "Copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i"
+              skopeo --insecure-policy copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i
             fi
           done
