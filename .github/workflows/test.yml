@@ -34,6 +34,6 @@ jobs:
             echo "checking $i"
             if ! luet util image-exist $dst/${REPO}:$i; then
               echo "Copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i"
-              skopeo --insecure-policy copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i
+              skopeo --insecure-policy copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i||skopeo --insecure-policy copy docker://$src/${REPO}:$i docker://$dst/${REPO}:$i
             fi
           done
